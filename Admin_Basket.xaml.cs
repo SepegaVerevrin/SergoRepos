@@ -280,6 +280,7 @@ namespace CourseWork {
             SqlCommand command;
             SqlParameter product_id_param;
             SqlParameter client_id_param;
+            SqlParameter date_time_param;
             SqlDataReader reader;
 
             final_price = 0;
@@ -334,7 +335,7 @@ namespace CourseWork {
                         sqlExpression = "INSERT INTO Operation (client_id, date_time, final_price) VALUES (@client_id_value, @date_time_value, @final_price_value)";
                         command = new SqlCommand(sqlExpression, connection);
                         client_id_param = new SqlParameter("@client_id_value", client_id); command.Parameters.Add(client_id_param);
-                        SqlParameter date_time_param = new SqlParameter("@date_time_value", current_time); command.Parameters.Add(date_time_param);
+                        date_time_param = new SqlParameter("@date_time_value", current_time); command.Parameters.Add(date_time_param);
                         SqlParameter final_price_param = new SqlParameter("@final_price_value", final_price); command.Parameters.Add(final_price_param);
                         command.ExecuteNonQuery();
 
@@ -394,18 +395,36 @@ namespace CourseWork {
                     Write_Admin_Basket(client_id);
 
                     try {
-                         
-                        StreamWriter p = new StreamWriter("test.txt", append: true);
+                        string fname = "cheque"  + ".txt";
+                        MessageBox.Show(fname);
+                        StreamWriter p = new StreamWriter(fname, append: true);
 
-                        p.WriteLine(" " + current_time + "  " + client_id);
+                        p.WriteLine("  Звездный Подорожничек");
+                        p.WriteLine(" Чек Дата " + current_time);
 
-/*
-  "Звездный Подорожничек"
- Чек Дата 2021:11:5:19:45:20 
- Аскорбинка ... 24 руб Х 10 шт
-   Стоимость ... 240 руб
- ИТОГ = 240 руб.
-*/
+                        sqlExpression = "SELECT dbo.Operations_content.client_id, dbo.Operations_content.date_time, dbo.Operations_content.product_id, dbo.Operations_content.count, dbo.Goods.product_name, dbo.Goods.price " +
+                            " FROMdbo.Operations_content LEFT OUTER JOIN dbo.Goods ON dbo.Operations_content.product_id = dbo.Goods.product_id " +
+                            " WHERE (dbo.Operations_content.client_id = @client_id_value) AND (dbo.Operations_content.date_time = '@date_time_value')";
+                        command = new SqlCommand(sqlExpression, connection);
+                        client_id_param = new SqlParameter("@client_id_value", client_id); command.Parameters.Add(client_id_param);
+                        date_time_param = new SqlParameter("@date_time_value", current_time); command.Parameters.Add(date_time_param);
+                        reader = command.ExecuteReader();
+                        if (reader.HasRows) {
+                            while (reader.Read()) {
+                                p.WriteLine(reader[4].ToString() + " ... " + reader[5].ToString() + " X " + reader[3].ToString());
+                                p.WriteLine("  стоимость ... " + reader.GetInt32(3)*reader.GetFloat(5) );
+                            } 
+                        
+                        }
+                        reader.Close();
+
+                        /*
+                          "Звездный Подорожничек"
+                         Чек Дата 2021:11:5:19:45:20 
+                         Аскорбинка ... 24 руб Х 10 шт
+                           Стоимость ... 240 руб
+                         ИТОГ = 240 руб.
+                        */
 
                         p.Close();
 
