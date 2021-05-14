@@ -65,6 +65,9 @@
     <Compile Include="Admin_Goods_Add.xaml.cs">
       <DependentUpon>Admin_Goods_Add.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Admin_Goods_Edit.xaml.cs">
+      <DependentUpon>Admin_Goods_Edit.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Admin_Product_Details.xaml.cs">
       <DependentUpon>Admin_Product_Details.xaml</DependentUpon>
     </Compile>
@@ -72,9 +75,6 @@
       <DependentUpon>Admin_UsersStat.xaml</DependentUpon>
     </Compile>
     <Compile Include="Manager.cs" />
-    <Compile Include="Recovery.xaml.cs">
-      <DependentUpon>Recovery.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Registering.xaml.cs">
       <DependentUpon>Registering.xaml</DependentUpon>
     </Compile>
@@ -93,6 +93,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Admin_Goods_Add.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Admin_Goods_Edit.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -117,10 +121,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Page1.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Recovery.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
