@@ -7,8 +7,10 @@ using System.Text.RegularExpressions;
 using System.Security.Cryptography;
 namespace CourseWork {
     public partial class Registering : Page {
-        public Registering() {
+        public string ConnectionString;
+        public Registering(string connectionString) {
             InitializeComponent();
+            ConnectionString = connectionString;
         }
         private static string GetMD5Hash(string text) {
             using (var hashAlg = MD5.Create()) {
@@ -21,7 +23,7 @@ namespace CourseWork {
             }
         }
         private void add_client(object sender, RoutedEventArgs e) {          
-            SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-52L8N5J\SQLEXPRESS02;;Initial Catalog=Pharmacy;" + "Integrated Security=True;Connect Timeout=15;Encrypt=False;" + "TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+            SqlConnection connection = new SqlConnection(ConnectionString);
             connection.Open();
             int err = 0;
             string name_local = name.Text;

@@ -5,14 +5,16 @@ using System.Windows.Controls;
 using System.Data.SqlClient;
 namespace CourseWork {
     public partial class Admin_Product_Details : Page {
+        public string ConnectionString;
         public class catalog_goods {
             public byte[] image { get; set; }
         }
         public int Product_id;
-        public Admin_Product_Details(int product_id) {
+        public Admin_Product_Details(int product_id, string connectionString) {
             InitializeComponent();
+            ConnectionString = connectionString;
             Product_id = product_id;
-            SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-52L8N5J\SQLEXPRESS02;;Initial Catalog=Pharmacy;" + "Integrated Security=True;Connect Timeout=15;Encrypt=False;" + "TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+            SqlConnection connection = new SqlConnection(ConnectionString);
             connection.Open();
             List<catalog_goods> goods_list = new List<catalog_goods>();
             /*вывод данных о товаре*/
@@ -38,7 +40,7 @@ namespace CourseWork {
         }
         /* кнопка редактинрования для администратора*/
         private void Admin_Goods_Edit_Button(object sender, RoutedEventArgs e) {
-            Manager.MainFrame.Navigate(new Admin_Goods_Edit(Product_id));
+            Manager.MainFrame.Navigate(new Admin_Goods_Edit(Product_id, ConnectionString));
         }
         /* кнопка удаления товара для администратора*/
         private void Admin_Goods_Del_Button(object sender, RoutedEventArgs e) {
@@ -48,7 +50,7 @@ namespace CourseWork {
             SqlParameter product_id_param;
             if (button != null) {
                 catalog_goods good = button.DataContext as catalog_goods; 
-                SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-52L8N5J\SQLEXPRESS02;;Initial Catalog=Pharmacy;" + "Integrated Security=True;Connect Timeout=15;Encrypt=False;" + "TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+                SqlConnection connection = new SqlConnection(ConnectionString);
                 connection.Open();
                 /* удаление товара из каталога*/
                 sqlExpression = "DELETE FROM Pharmacy.dbo.Basket WHERE product_id = @product_id_value DELETE FROM Pharmacy.dbo.Goods WHERE product_id = @product_id_value";

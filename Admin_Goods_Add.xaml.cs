@@ -8,15 +8,17 @@ using System.Data.SqlClient;
 using System.Text.RegularExpressions;
 namespace CourseWork {
     public partial class Admin_Goods_Add : Page {
+        public string ConnectionString;
         byte[] imageData = null; // Where i am ?
-        public Admin_Goods_Add() {
+        public Admin_Goods_Add(string connectionString) {
             InitializeComponent();
+            ConnectionString = connectionString;
         }
         /*кнопка добавления товара*/
         private void Admin_Goods_Continue_Button(object sender, RoutedEventArgs e) {
             int err = 0;
             Regex regex_name = new Regex(@"^[А-Яа-яA-Za-zёЁ0-9_]+$");
-            Regex regex_price = new Regex(@"^[0-9,]+$"); ////////////////error
+            Regex regex_price = new Regex(@"[0-9]*[,?][0-9]{2}$"); 
             Regex regex_count = new Regex(@"^[0-9]+$");
             if ((TextBox_Product_Name.Text.Length == 0) || (!regex_name.IsMatch(TextBox_Product_Name.Text))) {
                 Error_messege.Text = "неверное имя, нельзя использовать спец. символы: ./{(*#@#) и т.п.";
@@ -49,7 +51,7 @@ namespace CourseWork {
                     String product_name = TextBox_Product_Name.Text;
                     float price = float.Parse(TextBox_Product_Price.Text);
                     String description = TextBox_Description.Text;
-                    SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-52L8N5J\SQLEXPRESS02;;Initial Catalog=Pharmacy;" + "Integrated Security=True;Connect Timeout=15;Encrypt=False;" + "TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+                    SqlConnection connection = new SqlConnection(ConnectionString);
                     connection.Open();
                     /*добавление товара*/
                     string sqlExpression = "INSERT INTO Goods(product_id ,product_name ,description ,price ,count ,image) " +

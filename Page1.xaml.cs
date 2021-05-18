@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Security.Cryptography;
 namespace CourseWork {
     public partial class Page1 : Page {
+        public string ConnectionString;
         private static string GetMD5Hash(string text)
         {
             using (var hashAlg = MD5.Create()) // Создаем экземпляр класса реализующего алгоритм MD5
@@ -21,16 +22,17 @@ namespace CourseWork {
             }
         }
         /* Конструктор */
-        public Page1() {
-            InitializeComponent();     
+        public Page1(string connectionString) {
+            InitializeComponent();
+            ConnectionString = connectionString;
         }
         /* кнопка перехода на окно регистрации */
         private void Button_Click(object sender, RoutedEventArgs e) {
-            Manager.MainFrame.Navigate(new Registering());
+            Manager.MainFrame.Navigate(new Registering(ConnectionString));
         }
         /* Кнопка входа */
         private void Button_log_in(object sender, RoutedEventArgs e) {
-            SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-52L8N5J\SQLEXPRESS02;;Initial Catalog=Pharmacy;" + "Integrated Security=True;Connect Timeout=15;Encrypt=False;" + "TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+            SqlConnection connection = new SqlConnection(ConnectionString);
             connection.Open();
             int err = 0;
             string name_local = name.Text;
@@ -83,9 +85,9 @@ namespace CourseWork {
                         reader.Read();
                         string type = reader.GetString(2);
                         if (type == "user") {
-                            Manager.MainFrame.Navigate(new User(client_id));
+                            Manager.MainFrame.Navigate(new User(client_id, ConnectionString));
                         } else if (type == "admin") {
-                            Manager.MainFrame.Navigate(new Admin(client_id));
+                            Manager.MainFrame.Navigate(new Admin(client_id, ConnectionString));
                         }
                         reader.Close();
                     } else {

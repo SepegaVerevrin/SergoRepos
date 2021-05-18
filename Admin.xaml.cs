@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Data.SqlClient;
 namespace CourseWork {
     public partial class Admin : Page {
+        public string ConnectionString;
         public class catalog_goods {
             public int product_id { get; set; }
             public string product_name { get; set; }
@@ -20,7 +21,7 @@ namespace CourseWork {
             Admin_Catalog_ListView.ItemsSource = null;
             List<catalog_goods> goods_list = new List<catalog_goods>();
             string client_id=tmp;
-            SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-52L8N5J\SQLEXPRESS02;;Initial Catalog=Pharmacy;" + "Integrated Security=True;Connect Timeout=15;Encrypt=False;" + "TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+            SqlConnection connection = new SqlConnection(ConnectionString);
             connection.Open();
             /*вывод товаров*/
             string sqlExpression = "SELECT * FROM Goods";
@@ -44,13 +45,14 @@ namespace CourseWork {
             }
         }
         /* конструктор */
-        public Admin(string client_id) {
+        public Admin(string client_id, string connectionString) {
             InitializeComponent();
+            ConnectionString = connectionString;
             Admin_Catalog_ListView.ItemsSource = null;          
             List<catalog_goods> goods_list = new List<catalog_goods>();
             tmp = client_id;
             try {
-                SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-52L8N5J\SQLEXPRESS02;;Initial Catalog=Pharmacy;" + "Integrated Security=True;Connect Timeout=15;Encrypt=False;" + "TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+                SqlConnection connection = new SqlConnection(ConnectionString);
                 connection.Open();
                 /* вывод товаров */
                 string sqlExpression = "SELECT * FROM Goods";
@@ -78,12 +80,12 @@ namespace CourseWork {
         }
         /* кнопка просмотра пользователей для администратора */
         private void Admin_UsersStat_Button(object sender, RoutedEventArgs e) {
-            Manager.MainFrame.Navigate(new Admin_UsersStat());
+            Manager.MainFrame.Navigate(new Admin_UsersStat(ConnectionString));
         }
         // Переход в корзину
         private void Basket_Button(object sender, RoutedEventArgs e) {
             string client_id = tmp;
-            Manager.MainFrame.Navigate(new Admin_Basket(client_id));
+            Manager.MainFrame.Navigate(new Admin_Basket(client_id, ConnectionString));
         }
         // добавление в корзину
         private void Basket_Add_Button(object sender, RoutedEventArgs e) {
@@ -98,7 +100,7 @@ namespace CourseWork {
             List<catalog_goods> goods_list = new List<catalog_goods>();            
             if (button != null) {
                 catalog_goods good = button.DataContext as catalog_goods; // !!!
-                SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-52L8N5J\SQLEXPRESS02;;Initial Catalog=Pharmacy;" + "Integrated Security=True;Connect Timeout=15;Encrypt=False;" + "TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+                SqlConnection connection = new SqlConnection(ConnectionString);
                 connection.Open();
                 /* получаем кол-во товара на складе*/
                 sqlExpression = "SELECT [count] FROM Goods WHERE product_id = @product_id_value";
@@ -141,9 +143,11 @@ namespace CourseWork {
             List<catalog_goods> goods_list = new List<catalog_goods>();
             Admin_Catalog_ListView.ItemsSource = null;  
             string client_id = tmp;
-            SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-52L8N5J\SQLEXPRESS02;;Initial Catalog=Pharmacy;" + "Integrated Security=True;Connect Timeout=15;Encrypt=False;" + "TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+            SqlConnection connection = new SqlConnection(@ConnectionString);
             connection.Open();
             String SearchString = SearchTextBox.Text;
+            SearchString = SearchString.Replace("'", "['']");
+            SearchString = SearchString.Replace("%","[%]");
             /* поиск */
             string sqlExpression = "SELECT * FROM Goods WHERE product_name Like '%" + SearchString + "%'" ;
             SqlCommand command = new SqlCommand(sqlExpression, connection);
@@ -169,7 +173,7 @@ namespace CourseWork {
         private void Del_Search_Button(object sender, RoutedEventArgs e) {
             SearchTextBox.Text = "";
             List<catalog_goods> goods_list = new List<catalog_goods>();
-            SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-52L8N5J\SQLEXPRESS02;;Initial Catalog=Pharmacy;" + "Integrated Security=True;Connect Timeout=15;Encrypt=False;" + "TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+            SqlConnection connection = new SqlConnection(ConnectionString);
             connection.Open();
             /* вывод товаров */
             string sqlExpression = "SELECT * FROM Goods";
@@ -196,11 +200,11 @@ namespace CourseWork {
         private void Details_Button(object sender, RoutedEventArgs e) {
             Button button = sender as Button; // !!!          
             catalog_goods good = button.DataContext as catalog_goods; // !!!
-            Manager.MainFrame.Navigate(new Admin_Product_Details(good.product_id));    
+            Manager.MainFrame.Navigate(new Admin_Product_Details(good.product_id, ConnectionString));    
         }
         // Добавление нового товара
         private void Admin_Goods_Add_Button(object sender, RoutedEventArgs e) {
-            Manager.MainFrame.Navigate(new Admin_Goods_Add());                                                                                                                                     
+            Manager.MainFrame.Navigate(new Admin_Goods_Add(ConnectionString));                                                                                                                                     
         }
     }
 }

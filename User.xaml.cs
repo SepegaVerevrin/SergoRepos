@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Data.SqlClient;
 namespace CourseWork {
     public partial class User : Page {
+        public string ConnectionString;
     public class catalog_goods {
         public int product_id { get; set; }
         public string product_name { get; set; }
@@ -20,7 +21,7 @@ namespace CourseWork {
             User_Catalog_ListView.ItemsSource = null;
             List<catalog_goods> goods_list = new List<catalog_goods>();
             string client_id = tmp;
-            SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-52L8N5J\SQLEXPRESS02;;Initial Catalog=Pharmacy;" + "Integrated Security=True;Connect Timeout=15;Encrypt=False;" + "TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+            SqlConnection connection = new SqlConnection(ConnectionString);
             connection.Open();
             string sqlExpression = "SELECT * FROM Goods";
             SqlCommand command = new SqlCommand(sqlExpression, connection);
@@ -43,11 +44,12 @@ namespace CourseWork {
             }
         }
         /* конструктор */
-        public User(string client_id) {
+        public User(string client_id, string connectionString) {
             InitializeComponent();
+            ConnectionString = connectionString;
             tmp = client_id;
             List<catalog_goods> goods_list = new List<catalog_goods>();
-            SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-52L8N5J\SQLEXPRESS02;;Initial Catalog=Pharmacy;" + "Integrated Security=True;Connect Timeout=15;Encrypt=False;" + "TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+            SqlConnection connection = new SqlConnection(ConnectionString);
             connection.Open();
             string sqlExpression = "SELECT * FROM Goods";
             SqlCommand command = new SqlCommand(sqlExpression, connection);
@@ -72,7 +74,7 @@ namespace CourseWork {
         /* кнопка перехода в корзину */
         private void Basket_Button(object sender, RoutedEventArgs e) {
             string client_id = tmp;
-            Manager.MainFrame.Navigate(new Admin_Basket(client_id));
+            Manager.MainFrame.Navigate(new Admin_Basket(client_id, ConnectionString));
         }
         /* кнопка добавления в корзину */
         private void Basket_Add_Button(object sender, RoutedEventArgs e) {
@@ -88,7 +90,7 @@ namespace CourseWork {
             List<catalog_goods> goods_list = new List<catalog_goods>();
             if (button != null) {
                 catalog_goods good = button.DataContext as catalog_goods; 
-                SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-52L8N5J\SQLEXPRESS02;;Initial Catalog=Pharmacy;" + "Integrated Security=True;Connect Timeout=15;Encrypt=False;" + "TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+                SqlConnection connection = new SqlConnection(ConnectionString);
                 connection.Open();
                 /* получаем кол-во продукта */
                 sqlExpression = "SELECT [count] FROM Goods WHERE product_id = @product_id_value";
@@ -131,9 +133,11 @@ namespace CourseWork {
             List<catalog_goods> goods_list = new List<catalog_goods>();
             User_Catalog_ListView.ItemsSource = null;
             string client_id = tmp;
-            SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-52L8N5J\SQLEXPRESS02;;Initial Catalog=Pharmacy;" + "Integrated Security=True;Connect Timeout=15;Encrypt=False;" + "TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+            SqlConnection connection = new SqlConnection(ConnectionString);
             connection.Open();
             String SearchString = SearchTextBox.Text;
+            SearchString = SearchString.Replace("'", "['']");
+            SearchString = SearchString.Replace("%", "[%]");
             /* поиск */
             string sqlExpression = "SELECT * FROM Goods WHERE product_name Like '%" + SearchString + "%'";
             SqlCommand command = new SqlCommand(sqlExpression, connection);
@@ -159,7 +163,7 @@ namespace CourseWork {
         private void Del_Search_Button(object sender, RoutedEventArgs e) {
             SearchTextBox.Text = "";
             List<catalog_goods> goods_list = new List<catalog_goods>();
-            SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-52L8N5J\SQLEXPRESS02;;Initial Catalog=Pharmacy;" + "Integrated Security=True;Connect Timeout=15;Encrypt=False;" + "TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+            SqlConnection connection = new SqlConnection(ConnectionString);
             connection.Open();
             /* выводим заново */
             string sqlExpression = "SELECT * FROM Goods";
@@ -186,7 +190,7 @@ namespace CourseWork {
         private void Details_Button(object sender, RoutedEventArgs e) {
             Button button = sender as Button;           
             catalog_goods good = button.DataContext as catalog_goods; 
-            Manager.MainFrame.Navigate(new User_Product_Details(good.product_id));
+            Manager.MainFrame.Navigate(new User_Product_Details(good.product_id, ConnectionString));
         }
     }
 }

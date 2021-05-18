@@ -9,15 +9,17 @@ using System.Text.RegularExpressions;
 using System.IO;
 namespace CourseWork {
     public partial class Admin_Goods_Edit : Page {
+        public string ConnectionString;
         public int Product_id;
         public class catalog_goods {
             public byte[] image { get; set; }
         }
         byte[] imageData = null; 
-        public Admin_Goods_Edit(int product_id) {
+        public Admin_Goods_Edit(int product_id, string connectionString) {
             InitializeComponent();
             Product_id = product_id;
-            SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-52L8N5J\SQLEXPRESS02;;Initial Catalog=Pharmacy;" + "Integrated Security=True;Connect Timeout=15;Encrypt=False;" + "TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+            ConnectionString = connectionString;
+            SqlConnection connection = new SqlConnection(ConnectionString);
             connection.Open();
             List<catalog_goods> goods_list = new List<catalog_goods>();
             // выводим старую информацию
@@ -86,7 +88,7 @@ namespace CourseWork {
             } else { Error_messege.Text = ""; }
             if (err == 0) {
                 try {     
-                    SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-52L8N5J\SQLEXPRESS02;;Initial Catalog=Pharmacy;" + "Integrated Security=True;Connect Timeout=15;Encrypt=False;" + "TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+                    SqlConnection connection = new SqlConnection(ConnectionString);
                     connection.Open();
                     /* обновляем данные о товаре*/
                     string sqlExpression = "UPDATE Goods SET product_name = @new_product_name_value, price = @New_price_value, description = @New_description_value, " +

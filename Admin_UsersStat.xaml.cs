@@ -4,9 +4,9 @@ using System.Data;
 using System.Data.SqlClient;
 namespace CourseWork {    
     public partial class Admin_UsersStat : Page {
-        public Admin_UsersStat() {
+        public Admin_UsersStat(string ConnectionString) {
             InitializeComponent();
-            SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-52L8N5J\SQLEXPRESS02;;Initial Catalog=Pharmacy;" + "Integrated Security=True;Connect Timeout=15;Encrypt=False;" + "TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+            SqlConnection connection = new SqlConnection(ConnectionString);
             connection.Open();
             string sqlExpression = "SELECT * FROM clients";
             SqlCommand command = new SqlCommand(sqlExpression, connection);        

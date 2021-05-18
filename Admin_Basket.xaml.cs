@@ -7,6 +7,7 @@ using System.Data.SqlClient;
 using System.IO;
 namespace CourseWork {
     public partial class Admin_Basket : Page {
+        public string ConnectionString;
         public class basket_goods {
             public int product_id { get; set; }
             public string client_id { get; set; }
@@ -37,7 +38,7 @@ namespace CourseWork {
             List<basket_goods> goods_list = new List<basket_goods>();
             final_price = 0;
             try {
-                SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-52L8N5J\SQLEXPRESS02;;Initial Catalog=Pharmacy;" + "Integrated Security=True;Connect Timeout=15;Encrypt=False;" + "TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+                SqlConnection connection = new SqlConnection(ConnectionString);
                 connection.Open();
                 /* получаем итогувую цену */
                 sqlExpression = "SELECT dbo.Basket.count_goods, dbo.Goods.price, dbo.Goods.price * dbo.Basket.count_goods AS Expr1 FROM dbo.Basket INNER JOIN  dbo.Goods ON dbo.Basket.product_id = dbo.Goods.product_id WHERE(dbo.Basket.client_id = @client_id_value)";
@@ -80,8 +81,9 @@ namespace CourseWork {
             }
         }
         /*конструктор*/
-        public Admin_Basket(string client_id) {
+        public Admin_Basket(string client_id, string connectionString) {
             InitializeComponent();
+            ConnectionString = connectionString;
             tmp = client_id;            
             Write_Admin_Basket(client_id);
         }
@@ -93,7 +95,7 @@ namespace CourseWork {
             SqlCommand command;
             SqlParameter client_id_param;
             try {
-                SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-52L8N5J\SQLEXPRESS02;;Initial Catalog=Pharmacy;" + "Integrated Security=True;Connect Timeout=15;Encrypt=False;" + "TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+                SqlConnection connection = new SqlConnection(ConnectionString);
                 connection.Open();
                 basket_goods good = button.DataContext as basket_goods; // !!!
                 if (good != null) {
@@ -122,7 +124,7 @@ namespace CourseWork {
             int count_of_product_depot=0;
             int count_of_product_basket = 0;
             try {
-                SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-52L8N5J\SQLEXPRESS02;;Initial Catalog=Pharmacy;" + "Integrated Security=True;Connect Timeout=15;Encrypt=False;" + "TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+                SqlConnection connection = new SqlConnection(ConnectionString);
                 connection.Open();
                 basket_goods good = button.DataContext as basket_goods; // !!!
                 if (good != null) {
@@ -171,7 +173,7 @@ namespace CourseWork {
             SqlCommand command;
             SqlParameter client_id_param;
             try {
-                SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-52L8N5J\SQLEXPRESS02;;Initial Catalog=Pharmacy;" + "Integrated Security=True;Connect Timeout=15;Encrypt=False;" + "TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+                SqlConnection connection = new SqlConnection(ConnectionString);
                 connection.Open();
                 basket_goods good = button.DataContext as basket_goods; 
                 if (good != null) {
@@ -216,7 +218,7 @@ namespace CourseWork {
             int res = 0;
             string fname = "cheque" + DateTime.Now.ToString("yyffffff") + ".txt";
             try {
-                SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-52L8N5J\SQLEXPRESS02;;Initial Catalog=Pharmacy;" + "Integrated Security=True;Connect Timeout=15;Encrypt=False;" + "TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+                SqlConnection connection = new SqlConnection(ConnectionString);
                 connection.Open();
                 // проверяем есть ли у клиента в корзине товары
                 sqlExpression = "SELECT * FROM dbo.Basket WHERE(dbo.Basket.client_id = @client_id_value)";
@@ -345,7 +347,7 @@ namespace CourseWork {
         private void Details_Button(object sender, RoutedEventArgs e) {
             Button button = sender as Button; // !!!          
             basket_goods good = button.DataContext as basket_goods; // !!!
-            Manager.MainFrame.Navigate(new User_Product_Details(good.product_id));
+            Manager.MainFrame.Navigate(new User_Product_Details(good.product_id, ConnectionString));
         }
     }
 }

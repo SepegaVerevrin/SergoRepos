@@ -8,9 +8,9 @@ namespace CourseWork {
             public byte[] image { get; set; }
         }
         /*конструктор*/
-        public User_Product_Details(int product_id) {
+        public User_Product_Details(int product_id, string ConnectionString) {
             InitializeComponent();
-            SqlConnection connection = new SqlConnection(@"Data Source=DESKTOP-52L8N5J\SQLEXPRESS02;;Initial Catalog=Pharmacy;" + "Integrated Security=True;Connect Timeout=15;Encrypt=False;" + "TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+            SqlConnection connection = new SqlConnection(ConnectionString);
             connection.Open();
             List<catalog_goods> goods_list = new List<catalog_goods>();
             /* вывод информации о продукте*/
@@ -34,6 +34,5 @@ namespace CourseWork {
                 reader.Close();
             }
         }
-
     }
 }
